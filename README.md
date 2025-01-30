@@ -3,6 +3,7 @@
  
 ## Project Description  
 This repository contains the implementation and analysis of intent detection on the **CLINC150 dataset**, which includes 150 real-world intents. The project compares classical machine learning models (e.g., Naive Bayes, SVM), embedding-based approaches (FastText), and transformer-based models (RoBERTa). Key highlights:  
+- Compared classical ML (Naive Bayes, SVM), FastText, and transformer models
 - Achieved **96.22% accuracy** with fine-tuned RoBERTa-base.  
 - Explored synthetic data augmentation using **In-Context Data Augmentation (ICDA)** and **Pointwise V-Information (PVI)** filtering.  
 - Comprehensive evaluation of model performance, including macro F1, precision, recall, and confusion matrices.  
@@ -14,14 +15,15 @@ This repository contains the implementation and analysis of intent detection on 
 ## Results  
 
 ### Model Performance Comparison  
-| Model              | Test Accuracy | Macro F1 | Training Time (GPU/CPU) |  
-|--------------------|---------------|----------|-------------------------|  
-| Naive Bayes        | 81.62%         | 81.27%    | ~10 seconds (CPU)        |  
-| FastText           | 90.07%         | 90.02%    | ~1 minute (CPU)       |  
-| **RoBERTa-base**   | **96.22%**     | **96.22%**| 10+ hours (GPU)         |  
-| RoBERTa + ICDA+PVI | ~96.0%*       | -        | 17+ hours (GPU)         |  
+| Model              | Test Accuracy | Macro F1 | Training Time     |  
+|--------------------|---------------|----------|-------------------|  
+| Naive Bayes        | 81.62%        | 81.27%   | ~10 sec (CPU)     |  
+| FastText           | 90.07%        | 90.02%   | ~1 min (CPU)      |  
+| **RoBERTa-base**   | **96.22%**    | **96.22%** | 10+ hr (GPU)    |  
+| RoBERTa + ICDA+PVI | ~96.0%        | -        | 17+ hr (GPU)      |  
 
-*Adding synthetic data with ICDA+PVI (GPT-2 generated + PVI filtered) did not improve accuracy, likely due to using a smaller generator (GPT-2) and base model constraints.*  
+<small>*ICDA+PVI (GPT-2 + PVI filtering) showed no accuracy gains, likely due to generator/model size constraints.*</small>  
+
 ---
 
 ### Visual Results  
@@ -29,23 +31,23 @@ This repository contains the implementation and analysis of intent detection on 
 #### 1. **Precision-Recall Curves**  
 Micro-averaged precision-recall curves for each model:  
 
-#### 1. **RoBERTa-base**  
-Highest average precision (AP = 0.98), maintaining near-perfect precision even at high recall.  
-![RoBERTa Precision-Recall Curve](plots/roberta_pr_curve.png)  
+<div style="display: flex; justify-content: space-between;">
+  <img src="plots/roberta_pr_curve.png" alt="RoBERTa PR Curve" width="33%" />
+  <img src="plots/fasttext_pr_curve.png" alt="FastText PR Curve" width="33%" />
+  <img src="plots/nb_pr_curve.png" alt="Naive Bayes PR Curve" width="33%" />
+</div>
 
-#### 2. **FastText**  
-Moderate performance with gradual precision-recall trade-off.  
-![FastText Precision-Recall Curve](plots/fasttext_pr_curve.png)  
-
-#### 3. **Naive Bayes (TF-IDF)**  
-Steepest decline in precision as recall increases, reflecting weaker class separation.  
-![Naive Bayes Precision-Recall Curve](plots/nb_pr_curve.png)  
+- **Left**: RoBERTa-base (AP = 0.98)  
+- **Middle**: FastText  
+- **Right**: Naive Bayes (TF-IDF)   
 
 ---
 
 #### 2. **Accuracy and Metrics Bar Plot**  
 Comparison of Accuracy, F1, Precision, and Recall for the three main models:  
-![Accuracy-F1-Precision-Recall](plots/metrics_bar_plot.png)  
+<div style="text-align: center">
+  <img src="plots/metrics_bar_plot.png" alt="Metrics Comparison" style="width: 60%" />
+</div>
 
 ---
 
@@ -55,25 +57,33 @@ Bar plot showing test accuracy for all explored models:
 - FastText  
 - RoBERTa-base  
 
-![Model Accuracy Comparison](plots/all_models_accuracy.png)  
+<div style="text-align: center">
+  <img src="plots/all_models_accuracy.png" alt="All Models Accuracy" style="width: 60%" />
+</div>
 
 ---
 
 #### 4. **Class-Level Confusion Matrices**  
 Best and worst classes (by recall) for each model:  
 
-| Model           | Best Class (Recall)       | Worst Class (RE)      |  
+| Model           | Best Class (Recall)       | Worst Class (Recall)      |  
 |-----------------|------------------------------|-------------------------------|  
-| **Naive Bayes** | `travel_alert` (92%)         | `yes` (63%)                   |  
-| **FastText**    | `meaning_of_life` (100%)     | `yes` (72%)                   |  
-| **RoBERTa**     | `meaning_of_life` (100%)     | `credit_score` (88%)          |  
+| **Naive Bayes** | `whisper_mode` (100%)         | `change_user_name` (13.33%)                   |  
+| **FastText**    | `meaning_of_life` (100%)     | `yes` (76.67%)                   |  
+| **RoBERTa**     | `cancel` (100%)     | `meal_suggestion` (76.67%)          |  
 
 **Confusion Matrix Examples**:  
-- **Best Class (RoBERTa)**: `meaning_of_life`  
-  ![RoBERTa Best Class](plots/roberta_best_class.png)  
-
-- **Worst Class (FastText)**: `yes`  
-  ![FastText Worst Class](plots/fasttext_worst_class.png)  
+<div style="display: flex; justify-content: space-between; gap: 20px; align-items: flex-start">
+  <div style="flex: 1; text-align: center">
+    <p><strong>Best Class (RoBERTa): </strong><code>cancel</code></p>
+    <img src="plots/roberta_best_class.png" alt="RoBERTa Best Class" style="width: 50%; max-width: 400px" />
+  </div>
+  
+  <div style="flex: 1; text-align: center">
+    <p><strong>Worst Class (Naive Bayes): </strong><code>change_user_name</code></p>
+    <img src="plots/nb_worst_class.png" alt="Naive Bayes Worst Class" style="width: 50%; max-width: 400px" />
+  </div>
+</div>
 
 ---
 
@@ -82,14 +92,10 @@ Best and worst classes (by recall) for each model:
    - RoBERTa-base outperformed classical models by **~15% accuracy** and FastText by **~6%**, demonstrating transformers’ ability to capture contextual nuances.  
    - Achieved near state-of-the-art (SOTA) performance (**96.2%**), comparable to RoBERTa-large (96.8% in literature).  
 
-2. **Class-Level Analysis**:  
-   - **Best Class**: `meaning_of_life` (100% precision and recall).  
-   - **Worst Class**: `yes` (lower performance due to ambiguous short queries).  
-
-3. **Data Augmentation Challenges**:  
+2. **Data Augmentation Challenges**:  
    - ICDA+PVI required significant computational effort but yielded no gains, highlighting the importance of generator model size (e.g., OPT-66B vs. GPT-2).  
 
-4. **Efficiency Trade-offs**:  
+3. **Efficiency Trade-offs**:  
    - Classical models (e.g., Naive Bayes) trained in minutes but plateaued at **81–85% accuracy**.  
    - FastText provided a **6–7% boost** over TF-IDF models with subword embeddings.  
 
